@@ -1,75 +1,109 @@
-import { requireUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import Link from 'next/link';
-import AgentSidebarLayout from '@/components/agent/AgentSidebarLayout';
-import { StatusBadge } from '@/components/ui/StatusBadge';
-import { PriorityBadge } from '@/components/ui/PriorityBadge';
+import AgentTopBar from '@/components/agent/AgentTopBar';
+import TicketsSearchInput from './TicketsSearchInput';
+import TicketsFilterDropdown from './TicketsFilterDropdown';
+import TicketRow from './TicketRow';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const STATUS_FILTER_MAP: Record<string, string[]> = {
-  Open: ['OPEN'],
-  'In Progress': ['IN_PROGRESS'],
-  Closed: ['CLOSED', 'RESOLVED'],
-};
+const PAGE_SIZE = 10;
 
 export default async function AgentTicketsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const user = await requireUser(['SUPPORT_AGENT', 'ADMIN']);
-  const { status: statusFilter } = await searchParams;
+  const params = await searchParams;
 
-  const whereStatus =
-    statusFilter && STATUS_FILTER_MAP[statusFilter]
-      ? { status: { in: STATUS_FILTER_MAP[statusFilter] } }
-      : {};
+  const q         = String(params.q  ?? '');
+  const pageParam = String(params.page ?? '1');
+  const page      = Math.max(1, parseInt(pageParam, 10) || 1);
+  const cid       = String(params.cid  ?? '');
+  const aid       = String(params.aid  ?? '');
+  const dateFrom  = String(params.from ?? '');
+  const dateTo    = String(params.to   ?? '');
 
-  const tickets = await db.ticket.findMany({
-    where: whereStatus,
-    include: { author: true, assignee: true },
-    orderBy: { updatedAt: 'desc' },
-    take: 100,
-  });
+  // Multi-value params (status/category can appear multiple times)
+  const rawSt  = params.st;
+  const rawCat = params.cat;
+  const selectedStatuses   = rawSt  ? (Array.isArray(rawSt)  ? rawSt  : [rawSt])  : [];
+  const selectedCategories = rawCat ? (Array.isArray(rawCat) ? rawCat : [rawCat]) : [];
 
-  const tabs = ['All', 'Open', 'In Progress', 'Closed'];
+  // Build where clause
+  const andClauses: object[] = [];
+
+  if (selectedStatuses.length > 0)   andClauses.push({ status:     { in: selectedStatuses } });
+  if (selectedCategories.length > 0) andClauses.push({ department: { in: selectedCategories } });
+  if (cid)                            andClauses.push({ authorId: cid });
+  if (aid === 'unassigned')           andClauses.push({ assigneeId: null });
+  else if (aid)                       andClauses.push({ assigneeId: aid });
+  if (dateFrom)                       andClauses.push({ createdAt: { gte: new Date(dateFrom) } });
+  if (dateTo)                         andClauses.push({ createdAt: { lte: new Date(`${dateTo}T23:59:59`) } });
+  if (q.trim()) {
+    andClauses.push({
+      OR: [
+        { ticketId:   { contains: q } },
+        { title:      { contains: q } },
+        { department: { contains: q } },
+        { author: { name: { contains: q } } },
+      ],
+    });
+  }
+
+  const where = andClauses.length > 0 ? { AND: andClauses } : {};
+
+  const [total, tickets, customers, agents] = await Promise.all([
+    db.ticket.count({ where }),
+    db.ticket.findMany({
+      where,
+      include: { author: true, assignee: true },
+      orderBy: { updatedAt: 'desc' },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    db.user.findMany({
+      where: { role: 'CUSTOMER' },
+      select: { id: true, name: true },
+      orderBy: { name: 'asc' },
+    }),
+    db.user.findMany({
+      where: { role: { in: ['SUPPORT_AGENT', 'ADMIN'] } },
+      select: { id: true, name: true },
+      orderBy: { name: 'asc' },
+    }),
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  function pageHref(p: number) {
+    const ps = new URLSearchParams();
+    if (q) ps.set('q', q);
+    selectedStatuses.forEach((s) => ps.append('st', s));
+    selectedCategories.forEach((c) => ps.append('cat', c));
+    if (cid) ps.set('cid', cid);
+    if (aid) ps.set('aid', aid);
+    if (dateFrom) ps.set('from', dateFrom);
+    if (dateTo) ps.set('to', dateTo);
+    ps.set('page', String(p));
+    return `/agent/tickets?${ps.toString()}`;
+  }
 
   return (
-    <AgentSidebarLayout
-      user={user}
-      title="All Tickets"
-      subtitle={`${tickets.length} ticket${tickets.length !== 1 ? 's' : ''} found`}
-      actions={
-        <Link
-          href="/help/tickets/new"
-          className="flex items-center gap-2 bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors"
-        >
-          New Ticket
-        </Link>
-      }
-    >
+    <>
+      <AgentTopBar title="All Tickets" subtitle={`${total} ticket${total !== 1 ? 's' : ''} found`} />
       <div className="p-4 sm:p-6 lg:p-8">
-        {/* Filter tabs */}
-        <div className="flex items-center gap-1.5 flex-wrap mb-6">
-          {tabs.map((tab) => {
-            const isActive = (tab === 'All' && !statusFilter) || statusFilter === tab;
-            const href = tab === 'All' ? '/agent/tickets' : `/agent/tickets?status=${encodeURIComponent(tab)}`;
-            return (
-              <Link
-                key={tab}
-                href={href}
-                className={`text-sm px-4 py-2 rounded-lg transition-colors font-medium ${
-                  isActive
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'text-slate-600 hover:bg-slate-200 bg-white border border-slate-200'
-                }`}
-              >
-                {tab}
-              </Link>
-            );
-          })}
+
+        {/* Toolbar */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-5">
+          <TicketsSearchInput defaultValue={q} selectedStatuses={selectedStatuses} selectedCategories={selectedCategories} cid={cid} aid={aid} dateFrom={dateFrom} dateTo={dateTo} />
+          <TicketsFilterDropdown
+            customers={customers}
+            agents={agents}
+            current={{ statuses: selectedStatuses, categories: selectedCategories, customerId: cid, agentId: aid, dateFrom, dateTo, q }}
+          />
         </div>
 
-        {/* Tickets table */}
+        {/* Table */}
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[700px]">
@@ -87,73 +121,52 @@ export default async function AgentTicketsPage({
               <tbody className="divide-y divide-slate-100">
                 {tickets.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-slate-400 text-sm">
-                      No tickets found.
-                    </td>
+                    <td colSpan={7} className="px-6 py-12 text-center text-slate-400 text-sm">No tickets found.</td>
                   </tr>
                 )}
                 {tickets.map((ticket) => (
-                  <tr
-                    key={ticket.id}
-                    className="hover:bg-blue-50/40 transition-colors group cursor-pointer"
-                  >
-                    <td className="px-4 sm:px-6 py-3.5 text-xs font-mono text-slate-400 whitespace-nowrap">
-                      <Link href={`/agent/tickets/${ticket.id}`} className="hover:text-blue-600 transition-colors">
-                        {ticket.ticketId}
-                      </Link>
-                    </td>
-                    <td className="px-4 sm:px-6 py-3.5">
-                      <Link href={`/agent/tickets/${ticket.id}`} className="block">
-                        <div className="font-medium text-slate-900 text-sm max-w-[220px] truncate group-hover:text-blue-700 transition-colors">
-                          {ticket.title}
-                        </div>
-                        <div className="text-xs text-slate-400 mt-0.5">{ticket.department}</div>
-                      </Link>
-                    </td>
-                    <td className="px-4 sm:px-6 py-3.5 whitespace-nowrap">
-                      <StatusBadge status={ticket.status as never} />
-                    </td>
-                    <td className="px-4 sm:px-6 py-3.5 whitespace-nowrap">
-                      <PriorityBadge priority={ticket.priority as never} />
-                    </td>
-                    <td className="px-4 sm:px-6 py-3.5">
-                      <div className="flex items-center gap-2">
-                        <div className="h-6 w-6 bg-slate-100 rounded-full flex items-center justify-center text-xs font-semibold text-slate-600 flex-shrink-0">
-                          {ticket.author.name.charAt(0)}
-                        </div>
-                        <span className="text-sm text-slate-700 truncate max-w-[100px]">
-                          {ticket.author.name}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-4 sm:px-6 py-3.5">
-                      {ticket.assignee ? (
-                        <div className="flex items-center gap-2">
-                          <div className="h-6 w-6 bg-blue-100 rounded-full flex items-center justify-center text-xs font-semibold text-blue-700 flex-shrink-0">
-                            {ticket.assignee.name.charAt(0)}
-                          </div>
-                          <span className="text-sm text-slate-700 truncate max-w-[100px]">
-                            {ticket.assignee.name}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-xs text-slate-400 italic">Unassigned</span>
-                      )}
-                    </td>
-                    <td className="px-4 sm:px-6 py-3.5 whitespace-nowrap text-xs text-slate-400">
-                      {new Date(ticket.updatedAt).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
-                    </td>
-                  </tr>
+                  <TicketRow key={ticket.id} ticket={ticket} />
                 ))}
               </tbody>
             </table>
           </div>
+
+          {/* Pagination */}
+          <div className="flex items-center justify-between px-6 py-3 border-t border-slate-100 bg-slate-50/50">
+            <p className="text-xs text-slate-500">
+              Showing {tickets.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} of {total}
+            </p>
+            <div className="flex items-center gap-1">
+              <Link href={pageHref(page - 1)} aria-disabled={page <= 1}
+                className={`p-1.5 rounded-lg transition-colors ${page <= 1 ? 'pointer-events-none text-slate-300' : 'text-slate-600 hover:bg-slate-200'}`}>
+                <ChevronLeft className="h-4 w-4" />
+              </Link>
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
+                .reduce<(number | '...')[]>((acc, p, i, arr) => {
+                  if (i > 0 && p - (arr[i - 1] as number) > 1) acc.push('...');
+                  acc.push(p);
+                  return acc;
+                }, [])
+                .map((p, i) =>
+                  p === '...' ? (
+                    <span key={`e-${i}`} className="px-2 text-slate-400 text-sm">…</span>
+                  ) : (
+                    <Link key={p} href={pageHref(p as number)}
+                      className={`h-8 w-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${p === page ? 'text-white' : 'text-slate-600 hover:bg-slate-200'}`}
+                      style={p === page ? { background: '#319EA9' } : {}}>
+                      {p}
+                    </Link>
+                  )
+                )}
+              <Link href={pageHref(page + 1)} aria-disabled={page >= totalPages}
+                className={`p-1.5 rounded-lg transition-colors ${page >= totalPages ? 'pointer-events-none text-slate-300' : 'text-slate-600 hover:bg-slate-200'}`}>
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
-    </AgentSidebarLayout>
+    </>
   );
 }

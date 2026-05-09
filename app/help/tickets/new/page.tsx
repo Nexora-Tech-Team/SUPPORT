@@ -6,8 +6,8 @@ export default async function NewTicketPage({
 }: {
   searchParams: Promise<{ dept?: string }>;
 }) {
-  await requireUser(['CUSTOMER'], '/help/tickets/new');
+  const user = await requireUser(['CUSTOMER'], '/help/tickets/new');
   const params = await searchParams;
 
-  return <NewTicketForm initialDepartment={params.dept} />;
+  return <NewTicketForm initialDepartment={params.dept} userName={user.name} />;
 }

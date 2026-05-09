@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
-import AgentSidebarLayout from '@/components/agent/AgentSidebarLayout';
+import AgentTopBar from '@/components/agent/AgentTopBar';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { PriorityBadge } from '@/components/ui/PriorityBadge';
 import { SlaIndicator } from '@/components/ui/SlaIndicator';
@@ -39,19 +39,11 @@ export default function AgentClientLayout({ user, tickets, summary }: AgentClien
   });
 
   return (
-    <AgentSidebarLayout
-      user={user}
-      title="Dashboard"
-      subtitle={`Welcome back, ${user.name}. Here's what needs your attention.`}
-      actions={
-        <Link
-          href="/help/tickets/new"
-          className="flex items-center gap-2 bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors"
-        >
-          New Ticket
-        </Link>
-      }
-    >
+    <>
+      <AgentTopBar
+        title="Dashboard"
+        subtitle={`Welcome back, ${user.name}. Here's what needs your attention.`}
+      />
       <WelcomeGuide role={user.role} />
       <div className="p-4 sm:p-6 lg:p-8">
         {/* Stats Grid */}
@@ -168,6 +160,6 @@ export default function AgentClientLayout({ user, tickets, summary }: AgentClien
           </div>
         </div>
       </div>
-    </AgentSidebarLayout>
+    </>
   );
 }

@@ -1,37 +1,18 @@
 import { requireUser } from '@/lib/auth';
-import {
-  Mail,
-  ShieldCheck,
-  UserCircle2,
-} from 'lucide-react';
-import AgentSidebarLayout from '@/components/agent/AgentSidebarLayout';
+import { Mail, ShieldCheck, UserCircle2 } from 'lucide-react';
+import AgentTopBar from '@/components/agent/AgentTopBar';
 import SettingsForm from './SettingsForm';
 
 export default async function AgentSettingsPage() {
   const user = await requireUser(['SUPPORT_AGENT', 'ADMIN']);
 
-  const initials = user.name
-    .split(' ')
-    .map((n: string) => n[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
-
-  const roleLabel =
-    user.role === 'ADMIN'
-      ? 'Administrator'
-      : user.role === 'SUPPORT_AGENT'
-      ? 'Support Agent'
-      : 'Customer';
+  const initials = user.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
+  const roleLabel = user.role === 'ADMIN' ? 'Administrator' : user.role === 'SUPPORT_AGENT' ? 'Support Agent' : 'Customer';
 
   return (
-    <AgentSidebarLayout
-      user={user}
-      title="Settings"
-      subtitle="Manage your profile and account"
-    >
+    <>
+      <AgentTopBar title="Settings" subtitle="Manage your profile and account" />
       <div className="p-4 sm:p-6 lg:p-8 max-w-2xl space-y-6">
-        {/* Profile card */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6">
           <h2 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
             <UserCircle2 className="h-5 w-5 text-blue-600" />
@@ -71,7 +52,6 @@ export default async function AgentSettingsPage() {
           </div>
         </div>
 
-        {/* Change password card */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6">
           <h2 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-blue-600" />
@@ -80,6 +60,6 @@ export default async function AgentSettingsPage() {
           <SettingsForm />
         </div>
       </div>
-    </AgentSidebarLayout>
+    </>
   );
 }

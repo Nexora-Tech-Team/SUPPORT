@@ -69,7 +69,8 @@ export default function TicketReplyForm({ ticketId }: { ticketId: string }) {
         <button
           type="submit"
           disabled={pending || message.trim().length === 0}
-          className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
+          className="flex items-center gap-2 text-white px-5 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
+          style={{ background: 'rgb(43, 168, 184)' }}
         >
           {pending ? (
             <>

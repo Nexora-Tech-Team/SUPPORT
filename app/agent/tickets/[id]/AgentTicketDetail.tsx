@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
+import AgentTopBar from '@/components/agent/AgentTopBar';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { PriorityBadge } from '@/components/ui/PriorityBadge';
 import { formatDate } from '@/lib/utils';
@@ -137,37 +138,28 @@ export default function AgentTicketDetail({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto">
-          <Link
-            href="/agent"
-            className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-blue-600 transition-colors mb-3"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Link>
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-            <div className="min-w-0">
-              <span className="font-mono text-xs text-slate-400">{ticket.ticketId}</span>
-              <h1 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug mt-0.5 break-words">
-                {ticket.title}
-              </h1>
-            </div>
-            <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
-              <StatusBadge status={status} />
-              <PriorityBadge priority={ticket.priority} />
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
-                {ticket.department}
-              </span>
-            </div>
-          </div>
-        </div>
-      </header>
+    <>
+      <AgentTopBar title={ticket.ticketId} subtitle={ticket.title} />
 
       {/* Main content */}
       <div className="flex-1 max-w-7xl mx-auto w-full p-4 sm:p-6">
+        {/* Back button + badges */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+          <Link
+            href="/agent/tickets"
+            className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to tickets
+          </Link>
+          <div className="flex items-center gap-2 flex-wrap">
+            <StatusBadge status={status} />
+            <PriorityBadge priority={ticket.priority} />
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+              {ticket.department}
+            </span>
+          </div>
+        </div>
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Left column */}
           <div className="flex-1 min-w-0 flex flex-col gap-6">
@@ -263,7 +255,8 @@ export default function AgentTicketDetail({
                     type="button"
                     onClick={sendReply}
                     disabled={replying || !message.trim()}
-                    className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 active:bg-blue-800 disabled:opacity-40"
+                    className="rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition disabled:opacity-40"
+                    style={{ background: 'rgb(43, 168, 184)' }}
                   >
                     {replying ? 'Sending...' : 'Send reply'}
                   </button>
@@ -424,6 +417,6 @@ export default function AgentTicketDetail({
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

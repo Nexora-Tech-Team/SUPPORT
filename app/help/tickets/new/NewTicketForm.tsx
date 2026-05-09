@@ -12,7 +12,6 @@ import {
   ClipboardList,
   Globe,
   GraduationCap,
-  Headphones,
   Megaphone,
   MessageCircle,
   Minus,
@@ -21,6 +20,7 @@ import {
   Zap,
 } from 'lucide-react';
 import FileUploader, { type UploadedFile } from '@/components/ui/FileUploader';
+import CustomerShell from '@/components/help/CustomerShell';
 
 const departments = [
   { id: 'LMS', label: 'LMS (Learning Management)', desc: 'E-learning, course access, penilaian', icon: BookOpen, iconClass: 'text-violet-600' },
@@ -41,9 +41,10 @@ const priorities = [
 
 const stepLabels = ['Category', 'Details', 'Priority'];
 
-export default function NewTicketForm({ initialDepartment }: { initialDepartment?: string }) {
+export default function NewTicketForm({ initialDepartment, userName }: { initialDepartment?: string; userName: string }) {
   const router = useRouter();
-  const [step, setStep] = useState(1);
+  const hasInitialDept = Boolean(initialDepartment && departments.some((d) => d.id === initialDepartment));
+  const [step, setStep] = useState(hasInitialDept ? 2 : 1);
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -54,6 +55,11 @@ export default function NewTicketForm({ initialDepartment }: { initialDepartment
     description: '',
     priority: 'MEDIUM',
   });
+
+  const selectedDept = departments.find((d) => d.id === form.department);
+  const heroTitle = selectedDept
+    ? `${selectedDept.label} — Submit a Request`
+    : 'Submit a Support Request';
 
   const canContinue = useMemo(() => {
     if (step === 1) return Boolean(form.department);
@@ -89,25 +95,12 @@ export default function NewTicketForm({ initialDepartment }: { initialDepartment
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Nav */}
-      <nav className="bg-white border-b border-slate-100 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/help/tickets" className="flex items-center gap-2.5 text-slate-600 hover:text-slate-900 transition-colors">
-            <ArrowLeft className="h-4 w-4" />
-            <div className="h-7 w-7 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Headphones className="h-4 w-4 text-white" />
-            </div>
-            <div className="flex flex-col leading-tight">
-              <span className="font-bold text-slate-900 text-sm leading-none">Support</span>
-              <span className="text-[10px] text-violet-600 font-medium leading-none">by Nexora</span>
-            </div>
-          </Link>
-          <span className="text-sm text-slate-500 hidden sm:block">Submit a support ticket</span>
-        </div>
-      </nav>
-
-      <div className="max-w-2xl mx-auto px-4 py-10 md:py-14">
+    <CustomerShell
+      userName={userName}
+      heroTitle={heroTitle}
+      heroSubtitle="Fill in the form below and our team will get back to you as soon as possible."
+    >
+      <div className="max-w-2xl mx-auto">
         {/* Step indicator */}
         <div className="flex items-center justify-center mb-10">
           {[1, 2, 3].map((s) => (
@@ -282,14 +275,18 @@ export default function NewTicketForm({ initialDepartment }: { initialDepartment
 
           {/* Navigation footer */}
           <div className="px-6 md:px-8 py-4 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between">
-            <button
-              type="button"
-              onClick={() => setStep((current) => current - 1)}
-              disabled={step === 1 || pending}
-              className="flex items-center gap-2 text-slate-600 hover:text-slate-900 disabled:opacity-40 disabled:cursor-not-allowed text-sm font-medium py-2.5 px-3 rounded-xl hover:bg-slate-200/50 transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" /> Back
-            </button>
+            {step > 1 ? (
+              <button
+                type="button"
+                onClick={() => setStep((current) => current - 1)}
+                disabled={pending}
+                className="flex items-center gap-2 text-slate-600 hover:text-slate-900 disabled:opacity-40 disabled:cursor-not-allowed text-sm font-medium py-2.5 px-3 rounded-xl hover:bg-slate-200/50 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" /> Back
+              </button>
+            ) : (
+              <div />
+            )}
             {step < 3 ? (
               <button
                 type="button"
@@ -324,6 +321,6 @@ export default function NewTicketForm({ initialDepartment }: { initialDepartment
           </div>
         </div>
       </div>
-    </div>
+    </CustomerShell>
   );
 }
