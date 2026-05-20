@@ -64,9 +64,9 @@ export default function LoginForm({ nextPath }: { nextPath?: string }) {
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(43,128,143,0.7), rgba(41,87,97,0.7))' }} />
 
       {/* Main content */}
-      <div className="relative z-10 flex flex-1 items-center px-8 lg:px-20 min-h-0">
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-8 lg:flex-row lg:px-20 min-h-0 gap-8 lg:gap-16">
         {/* Left welcome text */}
-        <div className="hidden flex-1 lg:block">
+        <div className="text-center lg:text-left">
           <h1 className="text-5xl font-bold leading-tight text-white drop-shadow">
             Hi,<br /><span className="font-extrabold">Welcome Back!</span>
           </h1>
@@ -74,7 +74,7 @@ export default function LoginForm({ nextPath }: { nextPath?: string }) {
         </div>
 
         {/* Card */}
-        <div className="mx-auto w-full max-w-sm lg:mx-0">
+        <div className="w-full max-w-sm">
           <div className="rounded-2xl border border-white/20 bg-white/10 p-7 shadow-2xl backdrop-blur-xl">
 
             {/* Logo */}
