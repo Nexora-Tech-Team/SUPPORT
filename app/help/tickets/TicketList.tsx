@@ -37,19 +37,31 @@ export default function TicketList({ tickets }: { tickets: Ticket[] }) {
   const [search, setSearch] = useState('');
 
   const q = search.trim().toLowerCase();
-  const filtered = tickets
-    .filter((t) => statusFilter === 'All' || t.status === statusFilter)
-    .filter((t) => categoryFilter === 'All' || t.department === categoryFilter)
-    .filter((t) => !q || t.title.toLowerCase().includes(q) || t.ticketId.toLowerCase().includes(q) || t.department.toLowerCase().includes(q));
+
+  const afterSearch = tickets.filter(
+    (t) => !q || t.title.toLowerCase().includes(q) || t.ticketId.toLowerCase().includes(q) || t.department.toLowerCase().includes(q),
+  );
+
+  const afterSearchAndStatus = afterSearch.filter(
+    (t) => statusFilter === 'All' || t.status === statusFilter,
+  );
+
+  const afterSearchAndCategory = afterSearch.filter(
+    (t) => categoryFilter === 'All' || t.department === categoryFilter,
+  );
+
+  const filtered = afterSearchAndStatus.filter(
+    (t) => categoryFilter === 'All' || t.department === categoryFilter,
+  );
 
   const statusCountFor = (f: string) =>
-    f === 'All' ? tickets.length : tickets.filter((t) => t.status === f).length;
+    f === 'All' ? afterSearchAndCategory.length : afterSearchAndCategory.filter((t) => t.status === f).length;
 
   const categoryCountFor = (c: string) =>
-    c === 'All' ? tickets.length : tickets.filter((t) => t.department === c).length;
+    c === 'All' ? afterSearchAndStatus.length : afterSearchAndStatus.filter((t) => t.department === c).length;
 
   return (
-    <div className="max-w-3xl mx-auto flex flex-col" style={{ height: 'calc(100vh - 420px)', minHeight: '400px' }}>
+    <div className="max-w-3xl mx-auto flex flex-col" style={{ height: 'calc(100vh - 200px)', minHeight: '600px' }}>
 
       {/* Header + filters */}
       <div className="flex flex-col gap-4 mb-4 flex-shrink-0">

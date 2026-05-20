@@ -23,20 +23,20 @@ import FileUploader, { type UploadedFile } from '@/components/ui/FileUploader';
 import CustomerShell from '@/components/help/CustomerShell';
 
 const departments = [
-  { id: 'LMS', label: 'LMS (Learning Management)', desc: 'E-learning, course access, penilaian', icon: BookOpen, iconClass: 'text-violet-600' },
-  { id: 'CRM', label: 'CRM Application', desc: 'Data customer, input data, fitur CRM', icon: Users, iconClass: 'text-green-600' },
-  { id: 'AUDITQ', label: 'AUDITQ', desc: 'Audit project, extension, dokumentasi', icon: ClipboardList, iconClass: 'text-purple-600' },
-  { id: 'Website', label: 'Website', desc: 'Perubahan konten, akses website, bug', icon: Globe, iconClass: 'text-cyan-600' },
-  { id: 'Marketing', label: 'Marketing', desc: 'Desain, brosur, blast email, jadwal', icon: Megaphone, iconClass: 'text-amber-600' },
-  { id: 'Training Service', label: 'Training Service', desc: 'Penambahan standar, jadwal training', icon: GraduationCap, iconClass: 'text-indigo-600' },
-  { id: 'General', label: 'General / Other', desc: 'Pertanyaan umum atau lainnya', icon: MessageCircle, iconClass: 'text-slate-600' },
+  { id: 'LMS', label: 'LMS (Learning Management)', desc: 'E-learning, course access, penilaian', icon: BookOpen, iconClass: 'text-[rgb(43,168,184)]' },
+  { id: 'CRM', label: 'CRM', desc: 'Data customer, input data, fitur CRM', icon: Users, iconClass: 'text-[rgb(43,168,184)]' },
+  { id: 'AUDITQ', label: 'AUDITQ', desc: 'Audit project, extension, dokumentasi', icon: ClipboardList, iconClass: 'text-[rgb(43,168,184)]' },
+  { id: 'Website', label: 'Website', desc: 'Perubahan konten, akses website, bug', icon: Globe, iconClass: 'text-[rgb(43,168,184)]' },
+  { id: 'Marketing', label: 'Marketing', desc: 'Desain, brosur, blast email, jadwal', icon: Megaphone, iconClass: 'text-[rgb(43,168,184)]' },
+  { id: 'Training Service', label: 'Training Service', desc: 'Penambahan standar, jadwal training', icon: GraduationCap, iconClass: 'text-[rgb(43,168,184)]' },
+  { id: 'General', label: 'General / Other', desc: 'Pertanyaan umum atau lainnya', icon: MessageCircle, iconClass: 'text-[rgb(43,168,184)]' },
 ];
 
 const priorities = [
-  { id: 'LOW', label: 'Low', desc: 'General questions, no urgency', icon: Minus, iconClass: 'text-slate-600' },
-  { id: 'MEDIUM', label: 'Medium', desc: 'Affecting my work but I have a workaround', icon: TrendingUp, iconClass: 'text-violet-600' },
-  { id: 'HIGH', label: 'High', desc: 'Significantly impacting my work', icon: AlertCircle, iconClass: 'text-orange-600' },
-  { id: 'URGENT', label: 'Urgent', desc: 'Complete blocker, business critical', icon: Zap, iconClass: 'text-red-600' },
+  { id: 'LOW', label: 'Low', desc: 'General questions, no urgency', icon: Minus, iconClass: 'text-[rgb(43,168,184)]' },
+  { id: 'MEDIUM', label: 'Medium', desc: 'Affecting my work but I have a workaround', icon: TrendingUp, iconClass: 'text-[rgb(43,168,184)]' },
+  { id: 'HIGH', label: 'High', desc: 'Significantly impacting my work', icon: AlertCircle, iconClass: 'text-[rgb(43,168,184)]' },
+  { id: 'URGENT', label: 'Urgent', desc: 'Complete blocker, business critical', icon: Zap, iconClass: 'text-[rgb(43,168,184)]' },
 ];
 
 const stepLabels = ['Category', 'Details', 'Priority'];
@@ -109,20 +109,20 @@ export default function NewTicketForm({ initialDepartment, userName }: { initial
                 <div
                   className={`h-9 w-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
                     s < step
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-[rgb(43,168,184)] text-white'
                       : s === step
-                      ? 'bg-blue-600 text-white ring-4 ring-blue-100'
+                      ? 'bg-[rgb(43,168,184)] text-white ring-4 ring-[rgb(43,168,184)]/20'
                       : 'bg-slate-200 text-slate-500'
                   }`}
                 >
                   {s < step ? <Check className="h-4 w-4" /> : s}
                 </div>
-                <span className={`text-xs font-medium hidden sm:block ${s === step ? 'text-blue-600' : 'text-slate-400'}`}>
+                <span className={`text-xs font-medium hidden sm:block ${s === step ? 'text-[rgb(43,168,184)]' : 'text-slate-400'}`}>
                   {stepLabels[s - 1]}
                 </span>
               </div>
               {s < 3 ? (
-                <div className={`w-16 md:w-24 h-0.5 mx-2 mb-5 transition-colors ${s < step ? 'bg-blue-600' : 'bg-slate-200'}`} />
+                <div className={`w-16 md:w-24 h-0.5 mx-2 mb-5 transition-colors ${s < step ? 'bg-[rgb(43,168,184)]' : 'bg-slate-200'}`} />
               ) : null}
             </div>
           ))}
@@ -142,13 +142,13 @@ export default function NewTicketForm({ initialDepartment, userName }: { initial
                     onClick={() => setForm((current) => ({ ...current, department: dept.id }))}
                     className={`text-left p-4 rounded-xl border-2 transition-all hover:shadow-sm min-h-[88px] ${
                       form.department === dept.id
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-slate-200 hover:border-blue-200 hover:bg-blue-50/30'
+                        ? 'border-[rgb(43,168,184)] bg-[rgb(43,168,184)]/10'
+                        : 'border-slate-200 hover:border-[rgb(43,168,184)]/40 hover:bg-[rgb(43,168,184)]/5'
                     }`}
                   >
                     <div
                       className={`h-8 w-8 rounded-lg flex items-center justify-center mb-2 transition-colors ${
-                        form.department === dept.id ? 'bg-blue-100' : 'bg-slate-100'
+                        form.department === dept.id ? 'bg-[rgb(43,168,184)]/20' : 'bg-slate-100'
                       }`}
                     >
                       <dept.icon className={`h-4 w-4 ${dept.iconClass}`} />
@@ -177,7 +177,7 @@ export default function NewTicketForm({ initialDepartment, userName }: { initial
                     value={form.title}
                     onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))}
                     placeholder="Brief summary of your issue"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-slate-900 placeholder-slate-400 transition-shadow"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[rgb(43,168,184)] focus:border-transparent text-slate-900 placeholder-slate-400 transition-shadow"
                   />
                   <p className="text-xs text-slate-400 mt-1.5">Minimum 5 characters · {form.title.length} typed</p>
                 </div>
@@ -191,7 +191,7 @@ export default function NewTicketForm({ initialDepartment, userName }: { initial
                     onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
                     placeholder="Please provide detailed information, steps to reproduce, and any error messages."
                     rows={6}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-slate-900 placeholder-slate-400 resize-none transition-shadow"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[rgb(43,168,184)] focus:border-transparent text-slate-900 placeholder-slate-400 resize-none transition-shadow"
                   />
                   <p className="text-xs text-slate-400 mt-1.5">Minimum 10 characters · {form.description.length} typed</p>
                 </div>
@@ -218,13 +218,13 @@ export default function NewTicketForm({ initialDepartment, userName }: { initial
                     onClick={() => setForm((current) => ({ ...current, priority: priority.id }))}
                     className={`w-full text-left py-4 px-5 rounded-xl border-2 transition-all flex items-center gap-4 ${
                       form.priority === priority.id
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-slate-200 hover:border-blue-200 hover:bg-blue-50/20'
+                        ? 'border-[rgb(43,168,184)] bg-[rgb(43,168,184)]/10'
+                        : 'border-slate-200 hover:border-[rgb(43,168,184)]/40 hover:bg-[rgb(43,168,184)]/5'
                     }`}
                   >
                     <div
                       className={`h-9 w-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
-                        form.priority === priority.id ? 'bg-blue-100' : 'bg-slate-100'
+                        form.priority === priority.id ? 'bg-[rgb(43,168,184)]/20' : 'bg-slate-100'
                       }`}
                     >
                       <priority.icon className={`h-4 w-4 ${priority.iconClass}`} />
@@ -234,7 +234,7 @@ export default function NewTicketForm({ initialDepartment, userName }: { initial
                       <div className="text-slate-500 text-xs mt-0.5">{priority.desc}</div>
                     </div>
                     {form.priority === priority.id ? (
-                      <div className="h-5 w-5 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
+                      <div className="h-5 w-5 rounded-full bg-[rgb(43,168,184)] flex items-center justify-center flex-shrink-0">
                         <Check className="h-3 w-3 text-white" />
                       </div>
                     ) : (
@@ -245,8 +245,8 @@ export default function NewTicketForm({ initialDepartment, userName }: { initial
               </div>
 
               {/* Summary card */}
-              <div className="bg-blue-50 rounded-2xl p-4 border border-blue-100">
-                <div className="text-xs font-semibold text-blue-600 uppercase tracking-widest mb-3">Ticket Summary</div>
+              <div className="bg-[rgb(43,168,184)]/10 rounded-2xl p-4 border border-[rgb(43,168,184)]/20">
+                <div className="text-xs font-semibold text-[rgb(43,168,184)] uppercase tracking-widest mb-3">Ticket Summary</div>
                 <div className="space-y-2 text-sm">
                   <div className="flex gap-2">
                     <span className="text-slate-500 w-20 flex-shrink-0">Category</span>
@@ -292,7 +292,7 @@ export default function NewTicketForm({ initialDepartment, userName }: { initial
                 type="button"
                 onClick={() => setStep((current) => current + 1)}
                 disabled={!canContinue || pending}
-                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
+                className="flex items-center gap-2 bg-[rgb(43,168,184)] text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-[rgb(35,145,160)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
               >
                 Continue <ArrowRight className="h-4 w-4" />
               </button>

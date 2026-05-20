@@ -84,11 +84,11 @@ export default function HelpContent({ categories, userName, articles }: HelpCont
         <CustomerNav userName={userName} />
 
         {/* ── Hero content (bottom-left) ── */}
-        <div className="relative z-10 px-8 pt-6 lg:px-14 flex flex-col gap-3 max-w-md" style={{ paddingBottom: '3rem' }}>
+        <div className="relative z-10 px-8 pt-6 lg:px-14 flex flex-col gap-3 w-full" style={{ paddingBottom: '3rem' }}>
           {/* Card 1 — Heading + subtitle */}
-          <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md px-5 py-4">
+          <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md px-5 py-4 max-w-lg">
             <h1 className="text-2xl lg:text-3xl font-bold text-white leading-snug">
-              Find Answers Faster. Submit<br />Requests Easier
+              Find Answers Faster. <br />Submit Requests Easier
             </h1>
             <p className="text-white/80 text-sm mt-1.5">
               A centralized support hub for all CBQA Global services and operational need
@@ -96,7 +96,7 @@ export default function HelpContent({ categories, userName, articles }: HelpCont
           </div>
 
           {/* Card 2 — Search */}
-          <div className="rounded-full border border-white/20 bg-white/10 backdrop-blur-md px-4 py-2.5 flex items-center gap-3">
+          <div className="rounded-full border border-white/20 bg-white/10 backdrop-blur-md px-4 py-2.5 flex items-center gap-3 max-w-lg">
             <input
               type="text"
               value={query}
@@ -200,8 +200,8 @@ export default function HelpContent({ categories, userName, articles }: HelpCont
                   src={largeCard.image}
                   alt={largeCard.title}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  style={{ objectPosition: largeCard.imgPos }}
+                  className="object-cover group-hover:[transform:scale(1.05)]"
+                  style={{ objectPosition: largeCard.imgPos, transition: 'transform 0.3s ease' }}
                 />
                 {/* gradient + blur fade: clear at top, dark+blur at bottom */}
                 <div
@@ -212,10 +212,12 @@ export default function HelpContent({ categories, userName, articles }: HelpCont
                   className="absolute bottom-0 left-0 right-0"
                   style={{ height: '60%', backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)', maskImage: 'linear-gradient(to top, black 40%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to top, black 40%, transparent 100%)' }}
                 />
-                <div className="absolute inset-0 flex flex-col justify-end" style={{ padding: '1.5rem' }}>
+                <div className="absolute inset-0 flex flex-col justify-end" style={{ padding: '1.5rem', paddingBottom: '5rem' }}>
                   <h3 className="text-white font-bold text-xl leading-tight" style={{ marginBottom: '0.5rem' }}>{largeCard.title}</h3>
-                  <p className="text-white text-sm leading-relaxed" style={{ marginBottom: '3rem' }}>{largeCard.desc}</p>
-                  <div className="absolute bottom-6 right-6 h-9 w-9 rounded-full border border-white/40 bg-white/10 backdrop-blur-md flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                  <div className="overflow-hidden max-h-0 group-hover:max-h-24" style={{ transition: 'max-height 0.3s ease 0.1s' }}>
+                    <p className="text-white text-sm leading-relaxed opacity-0 group-hover:opacity-100" style={{ transition: 'opacity 0.3s ease 0.15s' }}>{largeCard.desc}</p>
+                  </div>
+                  <div className="absolute bottom-6 right-6 h-9 w-9 rounded-full border border-white/40 bg-white/10 backdrop-blur-md flex items-center justify-center group-hover:bg-white/20" style={{ transition: 'background-color 0.3s ease' }}>
                     <ArrowUpRight className="h-4 w-4 text-white" />
                   </div>
                 </div>
@@ -237,8 +239,8 @@ export default function HelpContent({ categories, userName, articles }: HelpCont
                     src={cat.image}
                     alt={cat.title}
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    style={{ objectPosition: cat.imgPos }}
+                    className="object-cover group-hover:[transform:scale(1.05)]"
+                    style={{ objectPosition: cat.imgPos, transition: 'transform 0.3s ease' }}
                   />
                   <div
                     className="absolute inset-0"
@@ -252,10 +254,10 @@ export default function HelpContent({ categories, userName, articles }: HelpCont
                   <div className="absolute inset-0 p-4 flex flex-col justify-between">
                     <div>
                       <h3 className="text-white font-bold text-base leading-snug mb-2">{cat.title}</h3>
-                      <p className="text-white text-xs leading-relaxed">{cat.desc}</p>
+                      <p className="text-white text-xs leading-relaxed opacity-0 group-hover:opacity-100" style={{ transition: 'opacity 0.3s ease 0.1s' }}>{cat.desc}</p>
                     </div>
                     <div className="flex justify-end">
-                      <div className="h-9 w-9 rounded-full border border-white/40 bg-white/10 backdrop-blur-md flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                      <div className="h-9 w-9 rounded-full border border-white/40 bg-white/10 backdrop-blur-md flex items-center justify-center group-hover:bg-white/20" style={{ transition: 'background-color 0.3s ease' }}>
                         <ArrowUpRight className="h-4 w-4 text-white" />
                       </div>
                     </div>
@@ -303,7 +305,7 @@ export default function HelpContent({ categories, userName, articles }: HelpCont
               className="rounded-lg text-white text-sm font-medium px-5 py-2.5 transition-colors"
               style={{ background: '#2ba8b8' }}
             >
-              Live Support
+              My Tickets
             </Link>
           </div>
         </div>

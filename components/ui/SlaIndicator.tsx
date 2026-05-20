@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatDistanceToNow } from '@/lib/utils';
 
 interface SlaIndicatorProps {
@@ -9,8 +9,16 @@ interface SlaIndicatorProps {
 }
 
 export function SlaIndicator({ createdAt, status }: SlaIndicatorProps) {
-  const [now] = useState(() => Date.now());
-  const hoursSince = (now - new Date(createdAt).getTime()) / (1000 * 60 * 60);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const hoursSince = mounted
+    ? (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60)
+    : 0;
+
   const isResolved = status === 'RESOLVED' || status === 'CLOSED';
 
   if (isResolved) {
@@ -20,6 +28,15 @@ export function SlaIndicator({ createdAt, status }: SlaIndicatorProps) {
           ✓
         </span>
         Resolved
+      </span>
+    );
+  }
+
+  if (!mounted) {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
+        On track
       </span>
     );
   }

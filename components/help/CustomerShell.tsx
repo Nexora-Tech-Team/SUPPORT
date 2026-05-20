@@ -30,8 +30,8 @@ export default function CustomerShell({ userName, heroTitle, heroSubtitle, child
           <CustomerNav userName={userName} />
 
           {/* Hero text card */}
-          <div className="px-8 pt-4 lg:px-14 flex flex-col gap-3" style={{ paddingBottom: '3rem', maxWidth: '32rem' }}>
-            <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md px-5 py-4">
+          <div className="px-8 pt-4 lg:px-14 flex flex-col gap-3 w-full" style={{ paddingBottom: '3rem' }}>
+            <div className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md px-5 py-4 max-w-lg">
               <h1 className="text-2xl lg:text-3xl font-bold text-white leading-snug">{heroTitle}</h1>
               <p className="text-white/80 text-sm mt-1.5">{heroSubtitle}</p>
             </div>
