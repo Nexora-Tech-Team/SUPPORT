@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { formatDistanceToNow } from '@/lib/utils';
 
 interface SlaIndicatorProps {
@@ -9,14 +9,11 @@ interface SlaIndicatorProps {
 }
 
 export function SlaIndicator({ createdAt, status }: SlaIndicatorProps) {
-  const [mounted, setMounted] = useState(false);
-  const [now, setNow] = useState(0);
+  const [now] = useState<number>(() =>
+    typeof window === 'undefined' ? 0 : Date.now(),
+  );
 
-  useEffect(() => {
-    setNow(Date.now());
-    setMounted(true);
-  }, []);
-
+  const mounted = now !== 0;
   const hoursSince = mounted
     ? (now - new Date(createdAt).getTime()) / (1000 * 60 * 60)
     : 0;
