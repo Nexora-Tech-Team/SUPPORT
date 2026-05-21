@@ -182,19 +182,12 @@ export default function HelpContent({ categories, userName, articles }: HelpCont
           </div>
 
         {/* Bento grid — col 1: LMS tall, col 2-3: 3 cards each */}
-        <div
-            className="grid gap-2.5"
-            style={{
-              gridTemplateColumns: '1fr 1fr 1fr',
-              gridTemplateRows: '190px 190px 190px',
-            }}
-          >
+        <div className="grid gap-2.5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:[grid-template-rows:190px_190px_190px]">
             {/* Col 1 — Learning Management (spans all 3 rows) */}
             {largeCard && (
               <Link
                 href={largeCard.href}
-                className="relative rounded-2xl overflow-hidden group"
-                style={{ gridColumn: '1', gridRow: '1 / span 3' }}
+                className="relative rounded-2xl overflow-hidden group h-52 sm:col-span-2 sm:h-64 lg:col-span-1 lg:h-auto lg:row-span-3"
               >
                 <Image
                   src={largeCard.image}
@@ -225,15 +218,12 @@ export default function HelpContent({ categories, userName, articles }: HelpCont
             )}
 
             {/* Col 2 & 3 — 6 small cards, row by row */}
-            {smallCards.slice(0, 6).map((cat, i) => {
-              const col = (i % 2) + 2;   // alternates col 2, 3
-              const row = Math.floor(i / 2) + 1; // row 1, 2, 3
+            {smallCards.slice(0, 6).map((cat) => {
               return (
                 <Link
                   key={cat.id}
                   href={cat.href}
-                  className="relative h-full rounded-2xl overflow-hidden group"
-                  style={{ gridColumn: String(col), gridRow: String(row) }}
+                  className="relative rounded-2xl overflow-hidden group h-48"
                 >
                   <Image
                     src={cat.image}
@@ -277,8 +267,8 @@ export default function HelpContent({ categories, userName, articles }: HelpCont
       <section className="pb-10">
         <div className="mx-auto w-full px-8 lg:px-14" style={{ maxWidth: '1280px' }}>
         <div
-          className="rounded-2xl flex items-center"
-          style={{ background: 'rgba(204,240,240,0.45)', border: '1px solid rgba(153,220,220,0.5)', gap: '2rem', padding: '1.5rem 2rem' }}
+          className="rounded-2xl flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8"
+          style={{ background: 'rgba(204,240,240,0.45)', border: '1px solid rgba(153,220,220,0.5)', padding: '1.5rem 2rem' }}
         >
           <div
             className="h-16 w-16 rounded-full flex items-center justify-center flex-shrink-0"
@@ -292,13 +282,13 @@ export default function HelpContent({ categories, userName, articles }: HelpCont
               Our team are ready to help with technical issues, operational requests, and service coordination
             </p>
           </div>
-          <div className="flex gap-3 flex-shrink-0 ml-4">
+          <div className="flex flex-wrap gap-3 sm:flex-shrink-0">
             <Link
               href="/help/tickets/new"
               className="rounded-lg text-white text-sm font-medium px-5 py-2.5 transition-colors"
               style={{ background: '#2ba8b8' }}
             >
-              CreateTicket
+              Create Ticket
             </Link>
             <Link
               href="/help/tickets"

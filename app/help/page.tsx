@@ -52,7 +52,7 @@ export default async function HelpPage() {
     {
       id: 'training',
       title: 'Training Services',
-      desc: 'Kelola inisiatif training dengan lebih efisien melalui dukungan jadwal, standar, dan koordinasi pembelajaran.',
+      desc: 'Manage your training initiatives more efficiently with support for scheduling, standards, and learning coordination.',
       href: '/help/tickets/new?dept=Training+Service',
       image: '/training.jpg',
       imgPos: '50% 50%',

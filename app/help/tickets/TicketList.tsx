@@ -18,6 +18,13 @@ const STATUS_LABELS: Record<string, string> = {
 
 const CATEGORIES = ['All', 'LMS', 'CRM', 'AUDITQ', 'Website', 'Marketing', 'Training Service', 'General'] as const;
 
+// Normalize legacy seed values to the canonical category names used by the form
+const DEPT_ALIASES: Record<string, string> = {
+  'CRM Application': 'CRM',
+  'AUDITQ Application': 'AUDITQ',
+};
+const normDept = (d: string) => DEPT_ALIASES[d] ?? d;
+
 interface Ticket {
   id: string;
   ticketId: string;
@@ -47,21 +54,21 @@ export default function TicketList({ tickets }: { tickets: Ticket[] }) {
   );
 
   const afterSearchAndCategory = afterSearch.filter(
-    (t) => categoryFilter === 'All' || t.department === categoryFilter,
+    (t) => categoryFilter === 'All' || normDept(t.department) === categoryFilter,
   );
 
   const filtered = afterSearchAndStatus.filter(
-    (t) => categoryFilter === 'All' || t.department === categoryFilter,
+    (t) => categoryFilter === 'All' || normDept(t.department) === categoryFilter,
   );
 
   const statusCountFor = (f: string) =>
     f === 'All' ? afterSearchAndCategory.length : afterSearchAndCategory.filter((t) => t.status === f).length;
 
   const categoryCountFor = (c: string) =>
-    c === 'All' ? afterSearchAndStatus.length : afterSearchAndStatus.filter((t) => t.department === c).length;
+    c === 'All' ? afterSearchAndStatus.length : afterSearchAndStatus.filter((t) => normDept(t.department) === c).length;
 
   return (
-    <div className="max-w-3xl mx-auto flex flex-col" style={{ height: 'calc(100vh - 200px)', minHeight: '600px' }}>
+    <div className="max-w-3xl mx-auto flex flex-col min-h-[600px] lg:min-h-[600px] lg:[height:calc(100vh-200px)]">
 
       {/* Header + filters */}
       <div className="flex flex-col gap-4 mb-4 flex-shrink-0">
@@ -136,7 +143,7 @@ export default function TicketList({ tickets }: { tickets: Ticket[] }) {
       </div>
 
       {/* Scrollable ticket list */}
-      <div className="flex-1 overflow-y-auto pr-1 space-y-3">
+      <div className="flex-1 pr-1 space-y-3 lg:overflow-y-auto">
         {filtered.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-2xl border border-slate-200">
             <div className="h-14 w-14 bg-cyan-50 rounded-2xl flex items-center justify-center mx-auto mb-4">

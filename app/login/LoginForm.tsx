@@ -59,7 +59,7 @@ export default function LoginForm({ nextPath }: { nextPath?: string }) {
   }
 
   return (
-    <div className="relative flex h-screen flex-col overflow-hidden">
+    <div className="relative flex min-h-screen flex-col lg:h-screen lg:overflow-hidden">
       <Image src="/login-bg-image.png" alt="" fill className="object-cover object-center" priority />
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(43,128,143,0.7), rgba(41,87,97,0.7))' }} />
 
@@ -125,6 +125,11 @@ export default function LoginForm({ nextPath }: { nextPath?: string }) {
                   className="flex w-full items-center justify-center gap-2 rounded-lg bg-cyan-400 px-4 py-2.5 text-sm font-semibold text-white hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-60 mt-1">
                   {pending ? <><Loader2 className="h-4 w-4 animate-spin" /> Signing in…</> : 'Login'}
                 </button>
+
+                <p className="text-center text-xs text-white/60 pt-1">
+                  Don&apos;t have an account?{' '}
+                  <Link href="/register" className="text-cyan-300 hover:text-cyan-200 font-medium">Sign up</Link>
+                </p>
               </form>
             )}
 
@@ -178,7 +183,7 @@ export default function LoginForm({ nextPath }: { nextPath?: string }) {
       </div>
 
       {/* Bottom Nexora logo pill */}
-      <div className="relative z-10 flex justify-center pb-4">
+      <div className="relative z-10 flex justify-center pb-4 mt-6 lg:mt-0">
         <div className="rounded-full bg-white/90 px-3 py-1 shadow-lg backdrop-blur-sm">
           <Image src="/nexora-partofcbqa-logo.png" alt="Nexora" width={64} height={20} style={{ width: 64, height: 'auto' }} className="object-contain" />
         </div>
