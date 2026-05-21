@@ -10,13 +10,15 @@ interface SlaIndicatorProps {
 
 export function SlaIndicator({ createdAt, status }: SlaIndicatorProps) {
   const [mounted, setMounted] = useState(false);
+  const [now, setNow] = useState(0);
 
   useEffect(() => {
+    setNow(Date.now());
     setMounted(true);
   }, []);
 
   const hoursSince = mounted
-    ? (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60)
+    ? (now - new Date(createdAt).getTime()) / (1000 * 60 * 60)
     : 0;
 
   const isResolved = status === 'RESOLVED' || status === 'CLOSED';
